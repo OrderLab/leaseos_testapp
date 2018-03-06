@@ -23,6 +23,7 @@ public class LongHoldingService extends Service {
     private final static String WAKELOCK_HOLDING_STATS = ACTION_PREFIX + ".HOLDING_STATS";
     private final static int MSG_HOLDING_STATS = 1;
     private long mHoldingTime = 0;
+    private PowerManager.WakeLock mWakelock;
 
     @Override
     public void onCreate() {
@@ -30,6 +31,8 @@ public class LongHoldingService extends Service {
         IntentFilter ifilter = new IntentFilter();
         ifilter.addAction(WAKELOCK_HOLDING_STATS);
         registerReceiver(mActionReceiver, ifilter);
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        mWakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "LeaseOS_testapp");
         super.onCreate();
     }
 
@@ -65,9 +68,11 @@ public class LongHoldingService extends Service {
         @Override
         public void run() {
             Log.d(TAG, "The holding time is " + mHoldingTime + "ms");
-            PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-            PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "LeaseOS_testapp");
-            wl.acquire(mHoldingTime);
+            if (mHoldingTime == 0) {
+                mWakelock.acquire();
+            } else {
+                mWakelock.acquire(mHoldingTime);
+            }
         }
     };
 

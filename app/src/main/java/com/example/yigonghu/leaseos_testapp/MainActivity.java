@@ -7,6 +7,8 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -17,36 +19,32 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView mTextMessage;
     private TextView mStatusView = null;
-
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    mTextMessage.setText(R.string.title_home);
-                    return true;
-                case R.id.navigation_dashboard:
-                    mTextMessage.setText(R.string.title_dashboard);
-                    return true;
-                case R.id.navigation_notifications:
-                    mTextMessage.setText(R.string.title_notifications);
-                    return true;
-            }
-            return false;
-        }
-    };
+    private TextView mRecyclerView;
+    private TextView mLayoutManager;
+    private TextView mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mStatusView = (TextView) findViewById(R.id.holding_time);
-        mStatusView.setText("Wait for command...");
-        mTextMessage = (TextView) findViewById(R.id.message);
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        IconData[] data = new IconData[] {
+                new IconData("Delete", android.R.drawable.ic_delete),
+                new IconData("Alert", android.R.drawable.ic_dialog_alert)
+        };
+
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        IconAdapter adapter = new IconAdapter(data);
+
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
+
+
+
+    // mStatusView = (TextView) findViewById(R.id.holding_time);
+       // mStatusView.setText("Wait for command...");
+       // mTextMessage = (TextView) findViewById(R.id.message);
     }
 
     /** Called when the user taps the Send button */

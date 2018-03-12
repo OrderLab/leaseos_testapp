@@ -18,7 +18,7 @@ import org.w3c.dom.ProcessingInstruction;
 public class LongHoldingService extends Service {
     private final static int MINUTE_PER_MILLISECOND = 60*1000;
     private final static String TAG = "LongHoldingService";
-    private final static long HOLDING_RATE = 1 * MINUTE_PER_MILLISECOND;
+    private final static long HOLDING_RATE = MINUTE_PER_MILLISECOND;
     public final static String ACTION_PREFIX = "edu.jhu.order.leaseos_testapp.action";
     private final static String WAKELOCK_HOLDING_STATS = ACTION_PREFIX + ".HOLDING_STATS";
     private final static int MSG_HOLDING_STATS = 1;
@@ -69,7 +69,7 @@ public class LongHoldingService extends Service {
         public void run() {
             Log.d(TAG, "The holding time is " + mHoldingTime + "ms");
             if (mHoldingTime == 0) {
-                mWakelock.acquire();
+                mWakelock.acquire(10 * 1000);
             } else {
                 mWakelock.acquire(mHoldingTime);
             }

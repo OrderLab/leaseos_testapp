@@ -5,4 +5,5 @@
     <string name="title_notifications">Notifications</string>
     <string name="edit_message">Enter a holding time in minutes</string>
     <string name="button_send">send</string>
+    <string name="wakelock">Wakelock dirsuptive behavior</string>
 </resources>

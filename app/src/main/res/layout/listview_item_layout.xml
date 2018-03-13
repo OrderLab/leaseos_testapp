@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:weightSum="1">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8pt"
+        android:layout_marginLeft="3pt"
+        android:layout_marginBottom="12dp">
+
+        <ImageView
+            android:id="@+id/button3"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_weight="2"
+            android:background="@drawable/disruptive" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="200dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="3pt"
+            android:layout_weight="8">
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="miles"-->
+                <!--android:id="@+id/miles"-->
+                <!--android:layout_gravity="right" />-->
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Title"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/Behavior"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="TextView" />
+
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:id="@+id/distance"
+            android:layout_gravity="left"
+            android:gravity="left" />
+
+    </LinearLayout>
+
+</LinearLayout>

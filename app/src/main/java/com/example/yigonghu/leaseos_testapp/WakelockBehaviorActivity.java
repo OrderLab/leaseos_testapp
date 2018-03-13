@@ -22,19 +22,24 @@
 package com.example.yigonghu.leaseos_testapp;
 
 import android.os.Bundle;
-import android.preference.PreferenceFragment;
-import android.support.v7.widget.Toolbar;
+import android.preference.PreferenceActivity;
+import android.widget.Toolbar;
+import android.widget.TextView;
 
 /**
  * Created by yigonghu on 3/13/18.
  */
 
-public class WakelockFragment extends PreferenceFragment {
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+public class WakelockBehaviorActivity extends PreferenceActivity {
 
-        // Load the preferences from an XML resource
-        addPreferencesFromResource(R.xml.wakelock_behavior);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // Display the fragment as the main content.
+        getFragmentManager().beginTransaction()
+                .replace(android.R.id.content, new WakelockFragment())
+                .commit();
+
     }
+
 }

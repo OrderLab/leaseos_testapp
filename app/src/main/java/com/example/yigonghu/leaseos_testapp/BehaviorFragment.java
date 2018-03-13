@@ -21,14 +21,17 @@
 
 package com.example.yigonghu.leaseos_testapp;
 
-import android.support.v4.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,27 +40,44 @@ import java.util.List;
  * Created by yigonghu on 3/12/18.
  */
 
-public class LocationFragment extends Fragment {
-    private static final String TAG = "LocationFragment";
+public class BehaviorFragment extends Fragment {
+    private static final String TAG = "BehaviorFragment";
+    private TextView mTitleView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d(TAG, "Start create Location fragment");
+        Log.d(TAG, "Start create behavior fragment");
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         super.onCreate(savedInstanceState);
+
         List<ListItem> newLists = new ArrayList<ListItem>();
 
-        newLists.add(new ListItem("GPS Behavior","Frequent Asking Disruptive Behavior"));
-        newLists.add(new ListItem("GPS Behavior","Long Holding Disruptive Behavior"));
-        newLists.add(new ListItem("GPS Behavior","Low Utility Disruptive Behavior"));
-        newLists.add(new ListItem("GPS Behavior","High System Damagege Behavior"));
+        newLists.add(new ListItem("Wakelock Behavior","Start wakelock Disruptive Behavior"));
+        newLists.add(new ListItem("Location Behavior","Start location Disruptive Behavior"));
+        newLists.add(new ListItem("Sensor Behavior","Start sensor Damagege Behavior"));
 
         ArrayAdapter<ListItem> adapter = new ListViewAdapter(getActivity().getApplicationContext(), R.layout.listview_item_layout, newLists);
         final ListView list = (ListView) view.findViewById(R.id.item_listViewTwo);
         list.setAdapter(adapter);
-
         list.setClickable(true);
+
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position,
+                                    long id) {
+                switch (position) {
+                    case 0:
+                        Intent intent = new Intent(getActivity(), WakelockBehaviorActivity.class);
+                        startActivity(intent);
+                        break;
+                    case 1:
+                    case 2:
+                }
+
+            }
+        });
         return view;
     }
+
 }

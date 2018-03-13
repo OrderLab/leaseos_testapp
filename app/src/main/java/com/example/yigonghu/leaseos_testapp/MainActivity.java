@@ -56,16 +56,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    /** Called when the user taps the Send button */
-   /* public void sendHoldingTime(View view) {
-        Intent intent = new Intent(this, LongHoldingService.class);
-        EditText editText = (EditText) findViewById(R.id.editText);
-        String message = editText.getText().toString();
-        intent.putExtra(EXTRA_MESSAGE, message);
-        mStatusView.setText("Holding time is " + Integer.parseInt(message) + " min");
-        startService(intent);
-    }*/
-
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
@@ -82,16 +72,14 @@ public class MainActivity extends AppCompatActivity {
             // Return a PlaceholderFragment (defined as a static inner class below).
             Log.d(TAG, "The position is " + position);
             switch (position) {
-                case 0: return new WakelockFragment();
-                case 1: return new LocationFragment();
-                case 2: return new SensorFragment();
+                case 0: return new BehaviorFragment();
             }
             return null;
         }
 
         @Override
         public int getCount() {
-            return 3;
+            return 1;
         }
 
     }

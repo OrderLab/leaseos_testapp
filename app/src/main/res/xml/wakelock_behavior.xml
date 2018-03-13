@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <PreferenceCategory android:title="@string/test_pref_tested_type">
+        <CheckBoxPreference
+            android:key="test_mode"
+            android:title="@string/test_pref_title_test_mode"
+            android:summary="@string/test_pref_description_test_mode"
+            android:defaultValue="true"/>
+        <ListPreference
+            android:key="behavior_type_window"
+            android:entries="@array/test_pref_behavior_type_titles"
+            android:entryValues="@array/test_pref_behavior_type_values"
+            android:summary="@string/test_pref_description_behavior_type"
+            android:defaultValue="0"
+            android:negativeButtonText="@null"
+            android:positiveButtonText="@null"
+            android:title="@string/test_pref_behavior_type" />
+
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/test_pref_longholding_para">
+        <ListPreference
+            android:key="rate_limit_window"
+            android:title="@string/test_pref_holding_time"
+            android:entries="@array/test_pref_holding_window_titles"
+            android:entryValues="@array/test_pref_holding_window_values"
+            android:summary="@string/test_pref_description_hold_time"
+            android:defaultValue="3"
+            android:negativeButtonText="@null"
+            android:positiveButtonText="@null"/>
+        <ListPreference
+            android:key="wait_window"
+            android:title="@string/test_pref_title_waiting"
+            android:entries="@array/test_pref_waiting_titles"
+            android:entryValues="@array/test_pref_waiting_values"
+            android:summary="@string/test_pref_description_wait_time"
+            android:defaultValue="3"
+            android:negativeButtonText="@null"
+            android:positiveButtonText="@null" />
+    </PreferenceCategory>
+</PreferenceScreen>

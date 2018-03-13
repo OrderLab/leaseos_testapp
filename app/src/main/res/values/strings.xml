@@ -6,4 +6,60 @@
     <string name="edit_message">Enter a holding time in minutes</string>
     <string name="button_send">send</string>
     <string name="wakelock">Wakelock dirsuptive behavior</string>
+    <string name="test_pref_title_test_mode">Enable Disruptive Behavior</string>
+    <string name="test_pref_description_test_mode">Start performing one type of disruptive behavior</string>
+    <string name="test_pref_description_behavior_type">"Choose the type of disruptive behavior to act"</string>
+    <string name="test_pref_description_hold_time">"Choose the time that the app holds for each wakelock"</string>
+    <string name="test_pref_description_wait_time">"Choose the time that the app waits for holding the next wakelock"</string>
+
+    <!-- General settings -->
+    <string name="test_pref_tested_type">Behavior</string>
+    <string name="test_pref_behavior_type">Disruptive Behavior type</string>
+    <string-array name="test_pref_behavior_type_titles">
+        <item>Long Holding</item>
+        <item>Low Utility</item>
+        <item>High Damage</item>
+        <item>Normal</item>
+    </string-array>
+    <string-array name="test_pref_behavior_type_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <!-- Long Holding settings -->
+    <string name="test_pref_longholding_para">Long Holding parameters</string>
+    <string name="test_pref_holding_time">Wakelock holding time</string>
+    <string-array name="test_pref_holding_window_titles">
+        <item>30 seconds</item>
+        <item>1 minutes</item>
+        <item>3 minutes</item>
+        <item>5 minutes</item>
+        <item>Forever</item>
+    </string-array>
+    <string-array name="test_pref_holding_window_values">
+        <item>0.5</item>
+        <item>1</item>
+        <item>3</item>
+        <item>5</item>
+        <item>-1</item>
+    </string-array>
+
+    <string name="test_pref_title_waiting">waiting window</string>
+    <string-array name="test_pref_waiting_titles">
+        <item>30 seconds</item>
+        <item>1 minutes</item>
+        <item>3 minutes</item>
+        <item>5 minutes</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="test_pref_waiting_values">
+        <item>0.5</item>
+        <item>1</item>
+        <item>3</item>
+        <item>5</item>
+        <item>0</item>
+    </string-array>
+
 </resources>

@@ -19,8 +19,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LongHoldingActivity"
-            android:label="@string/app_name"/>
+            android:name=".WakelockBehaviorActivity"
+            android:label="@string/app_name" />
         <service android:name=".LongHoldingService" />
 
     </application>

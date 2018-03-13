@@ -21,6 +21,7 @@
 
 package com.example.yigonghu.leaseos_testapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
@@ -28,6 +29,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -59,8 +61,24 @@ public class WakelockFragment extends Fragment {
         ArrayAdapter<ListItem> adapter = new ListViewAdapter(getActivity().getApplicationContext(), R.layout.listview_item_layout, newLists);
         final ListView list = (ListView) view.findViewById(R.id.item_listViewTwo);
         list.setAdapter(adapter);
-
         list.setClickable(true);
+
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position,
+                                    long id) {
+                switch (position) {
+                    case 0:
+                        Intent intent = new Intent(getActivity(), LongHoldingActivity.class);
+                        startActivity(intent);
+                        break;
+                    case 1:
+                    case 2:
+                }
+
+            }
+        });
+
         return view;
     }
 

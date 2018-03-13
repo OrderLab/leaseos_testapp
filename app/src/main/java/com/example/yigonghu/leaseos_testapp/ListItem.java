@@ -35,4 +35,8 @@ public class ListItem {
 
     public String getTitle() { return title; }
 
+    public String getBehavior() {
+        return behavior;
+    }
+
 }

@@ -64,6 +64,9 @@ public class ListViewAdapter extends ArrayAdapter<ListItem> {
         TextView title = (TextView) itemView.findViewById(R.id.title);
         title.setText(currentList.getTitle());
 
+        TextView Behavior = (TextView) itemView.findViewById(R.id.Behavior);
+        Behavior.setText(currentList.getBehavior());
+
         ImageView jo = (ImageView) itemView.findViewById(R.id.button3);
         Picasso.with(getContext())
                 .load(R.drawable.disruptive)

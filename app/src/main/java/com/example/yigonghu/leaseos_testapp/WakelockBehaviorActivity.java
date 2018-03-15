@@ -21,7 +21,9 @@
 
 package com.example.yigonghu.leaseos_testapp;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.widget.Toolbar;
 import android.widget.TextView;
@@ -30,7 +32,7 @@ import android.widget.TextView;
  * Created by yigonghu on 3/13/18.
  */
 
-public class WakelockBehaviorActivity extends PreferenceActivity {
+public class WakelockBehaviorActivity extends PreferenceActivity  {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +41,5 @@ public class WakelockBehaviorActivity extends PreferenceActivity {
         getFragmentManager().beginTransaction()
                 .replace(android.R.id.content, new WakelockFragment())
                 .commit();
-
     }
-
 }

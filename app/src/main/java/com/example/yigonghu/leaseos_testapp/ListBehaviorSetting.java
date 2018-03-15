@@ -24,11 +24,11 @@ package com.example.yigonghu.leaseos_testapp;
 /**
  *
  */
-public class ListItem {
+public class ListBehaviorSetting {
     private String title;
     private String behavior;
 
-    ListItem(String title, String behavior) {
+    ListBehaviorSetting(String title, String behavior) {
         this.title = title;
         this.behavior = behavior;
     }

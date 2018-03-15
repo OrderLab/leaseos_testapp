@@ -37,10 +37,10 @@ import java.util.List;
 /**
  *
  */
-public class ListViewAdapter extends ArrayAdapter<ListItem> {
+public class ListViewBehaviorSettingAdapter extends ArrayAdapter<ListBehaviorSetting> {
     int resource;
 
-    public ListViewAdapter(Context ctx, int res, List<ListItem> items)
+    public ListViewBehaviorSettingAdapter(Context ctx, int res, List<ListBehaviorSetting> items)
     {
         super(ctx, res, items);
         resource = res;
@@ -49,7 +49,7 @@ public class ListViewAdapter extends ArrayAdapter<ListItem> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LinearLayout itemView;
-        ListItem currentList = getItem(position);
+        ListBehaviorSetting currentList = getItem(position);
 
         if (convertView == null) {
             itemView = new LinearLayout(getContext());
@@ -75,7 +75,5 @@ public class ListViewAdapter extends ArrayAdapter<ListItem> {
                 .into(jo);
 
         return itemView;
-
-
     }
 }

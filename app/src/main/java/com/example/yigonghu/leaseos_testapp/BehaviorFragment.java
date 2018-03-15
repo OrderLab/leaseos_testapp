@@ -31,7 +31,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +41,7 @@ import java.util.List;
 
 public class BehaviorFragment extends Fragment {
     private static final String TAG = "BehaviorFragment";
-    private TextView mTitleView;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,13 +50,13 @@ public class BehaviorFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         super.onCreate(savedInstanceState);
 
-        List<ListItem> newLists = new ArrayList<ListItem>();
+        List<ListBehaviorSetting> newLists = new ArrayList<ListBehaviorSetting>();
 
-        newLists.add(new ListItem("Wakelock Behavior","Start wakelock Disruptive Behavior"));
-        newLists.add(new ListItem("Location Behavior","Start location Disruptive Behavior"));
-        newLists.add(new ListItem("Sensor Behavior","Start sensor Damagege Behavior"));
+        newLists.add(new ListBehaviorSetting("Wakelock Behavior","Start wakelock Disruptive Behavior"));
+        newLists.add(new ListBehaviorSetting("Location Behavior","Start location Disruptive Behavior"));
+        newLists.add(new ListBehaviorSetting("Sensor Behavior","Start sensor Damagege Behavior"));
 
-        ArrayAdapter<ListItem> adapter = new ListViewAdapter(getActivity().getApplicationContext(), R.layout.listview_item_layout, newLists);
+        ArrayAdapter<ListBehaviorSetting> adapter = new ListViewBehaviorSettingAdapter(getActivity().getApplicationContext(), R.layout.listview_behavior_layout, newLists);
         final ListView list = (ListView) view.findViewById(R.id.item_listViewTwo);
         list.setAdapter(adapter);
         list.setClickable(true);

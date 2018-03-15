@@ -8,7 +8,7 @@
             android:key="test_mode"
             android:title="@string/test_pref_title_test_mode"
             android:summary="@string/test_pref_description_test_mode"
-            android:defaultValue="true"/>
+            android:defaultValue="false"/>
         <ListPreference
             android:key="behavior_type_window"
             android:entries="@array/test_pref_behavior_type_titles"
@@ -18,7 +18,6 @@
             android:negativeButtonText="@null"
             android:positiveButtonText="@null"
             android:title="@string/test_pref_behavior_type" />
-
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/test_pref_longholding_para">
         <ListPreference
@@ -39,5 +38,19 @@
             android:defaultValue="3"
             android:negativeButtonText="@null"
             android:positiveButtonText="@null" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/lease_pref_header_checker">
+    <CheckBoxPreference
+        android:key="start_long_hold"
+        android:title="@string/lease_pref_title_enable_long_hold"
+        android:defaultValue="false"/>
+    <CheckBoxPreference
+        android:key="start_low_utility"
+        android:title="@string/lease_pref_title_enable_low_utility"
+        android:defaultValue="false"/>
+    <CheckBoxPreference
+        android:key="start_high_damage"
+        android:title="@string/lease_pref_title_enable_high_damage"
+        android:defaultValue="false"/>
     </PreferenceCategory>
 </PreferenceScreen>

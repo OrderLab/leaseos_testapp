@@ -21,7 +21,11 @@
 
 package com.example.yigonghu.leaseos_testapp;
 
+import android.content.ContentResolver;
+import android.database.ContentObserver;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -72,7 +76,8 @@ public class MainActivity extends AppCompatActivity {
             // Return a PlaceholderFragment (defined as a static inner class below).
             Log.d(TAG, "The position is " + position);
             switch (position) {
-                case 0: return new BehaviorFragment();
+                case 0:
+                    return new BehaviorFragment();
             }
             return null;
         }
@@ -83,5 +88,4 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
 }

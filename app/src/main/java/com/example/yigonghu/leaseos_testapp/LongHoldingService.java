@@ -28,32 +28,37 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.PowerManager;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
-import org.w3c.dom.ProcessingInstruction;
-
 public class LongHoldingService extends Service {
-    private final static int MINUTE_PER_MILLISECOND = 60*1000;
     private final static String TAG = "LongHoldingService";
-    private final static long HOLDING_RATE = MINUTE_PER_MILLISECOND;
     public final static String ACTION_PREFIX = "edu.jhu.order.leaseos_testapp.action";
-    private final static String WAKELOCK_HOLDING_STATS = ACTION_PREFIX + ".HOLDING_STATS";
+    public final static String WAKELOCK_HOLDING_STATS = ACTION_PREFIX + ".HOLDING_STATS";
+    public final static String PARAMETER_CHANGE = ACTION_PREFIX + ".PARAMETER_CHANGE";
+    public final static String EXTRA_MESSAGE = ACTION_PREFIX + ".EXTRA_MESSAGE";
     private final static int MSG_HOLDING_STATS = 1;
-    private long mHoldingTime = 0;
+    private long mHoldTime = 0;
+    private long mWaitTime = 0;
     private PowerManager.WakeLock mWakelock;
 
     @Override
     public void onCreate() {
         Log.d(TAG, "Starting service...");
-        IntentFilter ifilter = new IntentFilter();
-        ifilter.addAction(WAKELOCK_HOLDING_STATS);
-        registerReceiver(mActionReceiver, ifilter);
+
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         mWakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "LeaseOS_testapp");
+
+        IntentFilter ifilter = new IntentFilter();
+        ifilter.addAction(WAKELOCK_HOLDING_STATS);
+        ifilter.addAction(PARAMETER_CHANGE);
+        registerReceiver(mActionReceiver, ifilter);
+
         super.onCreate();
     }
 
@@ -61,15 +66,13 @@ public class LongHoldingService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null) {
             Log.d(TAG, "The intent is not null");
-            String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
-            mHoldingTime = Integer.parseInt(message) * MINUTE_PER_MILLISECOND;
-        } else {
-            Log.d(TAG, "The intent is null");
-            mHoldingTime = 1 * MINUTE_PER_MILLISECOND;
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+            String holdTime = sharedPref.getString("rate_limit_window", "1");
+            mHoldTime = (long) (Float.parseFloat(holdTime) * TimeUtils.MILLIS_PER_MINUTE);
+            String waitTime = sharedPref.getString("wait_window", "1");
+            mWaitTime = (long) (Float.parseFloat(waitTime) * TimeUtils.MILLIS_PER_MINUTE);
+            schedulAlarm();
         }
-
-        schedulAlarm();
-
         return START_STICKY;
     }
 
@@ -88,21 +91,22 @@ public class LongHoldingService extends Service {
     private Runnable mHoldingWakelock = new Runnable() {
         @Override
         public void run() {
-            Log.d(TAG, "The holding time is " + mHoldingTime + "ms");
-            if (mHoldingTime == 0) {
-                mWakelock.acquire(10 * 1000);
+            Log.d(TAG, "The holding time is " + mHoldTime / 1000 + " seconds and the wait time is " + mWaitTime / 1000 + " seconds");
+            if (mHoldTime < 0) {
+                mWakelock.acquire();
             } else {
-                mWakelock.acquire(mHoldingTime);
+                mWakelock.acquire(mHoldTime);
             }
         }
     };
 
     private void schedulAlarm() {
+        Log.d(TAG, "The holding time is " + mHoldTime / 1000 + " seconds and the wait time is " + mWaitTime / 1000 + " seconds");
         AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         PendingIntent operation = PendingIntent.getBroadcast(this, 0,
-                new Intent(WAKELOCK_HOLDING_STATS), 0);
-        am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),
-                HOLDING_RATE + mHoldingTime, operation);
+                new Intent(WAKELOCK_HOLDING_STATS),0 );
+        am.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),
+                mHoldTime+mWaitTime, operation);
     }
 
     private void cancelAlarm() {
@@ -112,15 +116,6 @@ public class LongHoldingService extends Service {
         am.cancel(operation);
     }
 
-    private final BroadcastReceiver mActionReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String actionStr = intent.getAction();
-            if (actionStr.equalsIgnoreCase(WAKELOCK_HOLDING_STATS)) {
-                mHandler.sendEmptyMessage(MSG_HOLDING_STATS);
-            }
-        }
-    };
 
     private final Handler mHandler = new Handler() {
         @Override
@@ -136,4 +131,32 @@ public class LongHoldingService extends Service {
         }
 
     };
+
+    private final BroadcastReceiver mActionReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String actionStr = intent.getAction();
+            if(actionStr.equalsIgnoreCase(WAKELOCK_HOLDING_STATS)) {
+                mHandler.sendEmptyMessage(MSG_HOLDING_STATS);
+            }else if (actionStr.equalsIgnoreCase(PARAMETER_CHANGE)) {
+                int actionType = intent.getIntExtra(EXTRA_MESSAGE, WakelockFragment.NO_CHANGE);
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+                switch (actionType) {
+                    case WakelockFragment.HOLD_TIME_CHANGE:
+                        String holdTime = sharedPref.getString("rate_limit_window", "1");
+                        mHoldTime = (long) (Float.parseFloat(holdTime) * TimeUtils.MILLIS_PER_MINUTE);
+                        Log.d(TAG, "The holding time changes to " + mHoldTime / 1000 + " seconds");
+                        break;
+                    case WakelockFragment.WAIT_TIME_CHANGE:
+                        String waitTime = sharedPref.getString("wait_window", "1");
+                        mWaitTime = (long) (Float.parseFloat(waitTime) * TimeUtils.MILLIS_PER_MINUTE);
+                        Log.d(TAG, "The wait time changes to " + mWaitTime / 1000 + " seconds");
+                        break;
+                    default:
+                        Log.d(TAG, "Nothing changed");
+                }
+            }
+        }
+    };
+
 }

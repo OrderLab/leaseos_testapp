@@ -22,16 +22,17 @@
         <item>Normal</item>
     </string-array>
     <string-array name="test_pref_behavior_type_values">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
+        <item>Long Holding</item>
+        <item>Low Utility</item>
+        <item>High Damage</item>
+        <item>Normal</item>
     </string-array>
 
     <!-- Long Holding settings -->
     <string name="test_pref_longholding_para">Long Holding parameters</string>
     <string name="test_pref_holding_time">Wakelock holding time</string>
     <string-array name="test_pref_holding_window_titles">
+        <item>10 seconds</item>
         <item>30 seconds</item>
         <item>1 minutes</item>
         <item>3 minutes</item>
@@ -39,6 +40,7 @@
         <item>Forever</item>
     </string-array>
     <string-array name="test_pref_holding_window_values">
+        <item>0.1667</item>
         <item>0.5</item>
         <item>1</item>
         <item>3</item>
@@ -46,8 +48,9 @@
         <item>-1</item>
     </string-array>
 
-    <string name="test_pref_title_waiting">waiting window</string>
+    <string name="test_pref_title_waiting">Waiting window</string>
     <string-array name="test_pref_waiting_titles">
+        <item>10 seconds</item>
         <item>30 seconds</item>
         <item>1 minutes</item>
         <item>3 minutes</item>
@@ -55,11 +58,19 @@
         <item>Never</item>
     </string-array>
     <string-array name="test_pref_waiting_values">
+        <item>0.1667</item>
         <item>0.5</item>
         <item>1</item>
         <item>3</item>
         <item>5</item>
         <item>0</item>
     </string-array>
+    <string name="start_button">Start Behavior</string>
+
+    <!-- Start settings -->
+    <string name="lease_pref_header_checker">Disruptive Behavior</string>
+    <string name="lease_pref_title_enable_long_hold">Start Long Holding behavior </string>
+    <string name="lease_pref_title_enable_low_utility">Start Low Utility behavior</string>
+    <string name="lease_pref_title_enable_high_damage">Start High Damaged behavior</string>
 
 </resources>

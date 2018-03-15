@@ -109,6 +109,7 @@ public class WakelockFragment extends PreferenceFragment implements SharedPrefer
 
     private void noteHoldTimeChange() {
         if (startLongHold) {
+            Log.d(TAG, "Note the hold time change");
             intent.putExtra(LongHoldingService.EXTRA_MESSAGE, HOLD_TIME_CHANGE);
             getActivity().sendBroadcast(intent);
         }

@@ -25,12 +25,15 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.Message;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
@@ -46,6 +49,21 @@ public class LongHoldingService extends Service {
     private long mHoldTime = 0;
     private long mWaitTime = 0;
     private PowerManager.WakeLock mWakelock;
+    private HandlerThread mHandlerThread;
+    ;
+
+    private Runnable mHoldingWakelock = new Runnable() {
+        @Override
+        public void run() {
+            Log.d(TAG, "The holding time is " + mHoldTime / 1000 + " seconds and the wait time is " + mWaitTime / 1000 + " seconds");
+            if (mHoldTime < 0) {
+                mWakelock.acquire();
+            } else {
+                mWakelock.acquire(mHoldTime);
+            }
+            scheduleLongHold(false);
+        }
+    };
 
     @Override
     public void onCreate() {
@@ -55,9 +73,11 @@ public class LongHoldingService extends Service {
         mWakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "LeaseOS_testapp");
 
         IntentFilter ifilter = new IntentFilter();
-        ifilter.addAction(WAKELOCK_HOLDING_STATS);
         ifilter.addAction(PARAMETER_CHANGE);
         registerReceiver(mActionReceiver, ifilter);
+
+        mHandlerThread = new HandlerThread(TAG);
+        mHandlerThread.start();
 
         super.onCreate();
     }
@@ -71,7 +91,7 @@ public class LongHoldingService extends Service {
             mHoldTime = (long) (Float.parseFloat(holdTime) * TimeUtils.MILLIS_PER_MINUTE);
             String waitTime = sharedPref.getString("wait_window", "1");
             mWaitTime = (long) (Float.parseFloat(waitTime) * TimeUtils.MILLIS_PER_MINUTE);
-            schedulAlarm();
+            mHandler.sendEmptyMessage(MSG_HOLDING_STATS);
         }
         return START_STICKY;
     }
@@ -80,7 +100,7 @@ public class LongHoldingService extends Service {
     public void onDestroy() {
         Log.d(TAG, "Stoping service...");
         unregisterReceiver(mActionReceiver);
-        cancelAlarm();
+        cancelLongHold();
     }
 
     @Override
@@ -88,57 +108,29 @@ public class LongHoldingService extends Service {
         return null;
     }
 
-    private Runnable mHoldingWakelock = new Runnable() {
-        @Override
-        public void run() {
-            Log.d(TAG, "The holding time is " + mHoldTime / 1000 + " seconds and the wait time is " + mWaitTime / 1000 + " seconds");
-            if (mHoldTime < 0) {
-                mWakelock.acquire();
+    public void scheduleLongHold(boolean immediate) {
+        if (mHandler != null) {
+            Log.d(TAG, "Start schedule the work.");
+            if (immediate) {
+                mHandler.postDelayed(mHoldingWakelock, 0);
             } else {
-                mWakelock.acquire(mHoldTime);
+                mHandler.postDelayed(mHoldingWakelock, mHoldTime + mWaitTime);
             }
         }
-    };
-
-    private void schedulAlarm() {
-        Log.d(TAG, "The holding time is " + mHoldTime / 1000 + " seconds and the wait time is " + mWaitTime / 1000 + " seconds");
-        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        PendingIntent operation = PendingIntent.getBroadcast(this, 0,
-                new Intent(WAKELOCK_HOLDING_STATS),0 );
-        am.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),
-                mHoldTime+mWaitTime, operation);
     }
 
-    private void cancelAlarm() {
-        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        PendingIntent operation = PendingIntent.getBroadcast(this, 0,
-                new Intent(WAKELOCK_HOLDING_STATS), 0);
-        am.cancel(operation);
-    }
-
-
-    private final Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case MSG_HOLDING_STATS:
-                    Thread t = new Thread(mHoldingWakelock);
-                    t.start();
-                    break;
-                default:
-                    super.handleMessage(msg);
-            }
+    public void cancelLongHold() {
+        if (mHandler != null) {
+            Log.d(TAG, "Cancelling LongHold behavior");
+            mHandler.removeCallbacks(mHoldingWakelock);
         }
-
-    };
+    }
 
     private final BroadcastReceiver mActionReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String actionStr = intent.getAction();
-            if(actionStr.equalsIgnoreCase(WAKELOCK_HOLDING_STATS)) {
-                mHandler.sendEmptyMessage(MSG_HOLDING_STATS);
-            }else if (actionStr.equalsIgnoreCase(PARAMETER_CHANGE)) {
+            if (actionStr.equalsIgnoreCase(PARAMETER_CHANGE)) {
                 int actionType = intent.getIntExtra(EXTRA_MESSAGE, WakelockFragment.NO_CHANGE);
                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
                 switch (actionType) {
@@ -146,11 +138,15 @@ public class LongHoldingService extends Service {
                         String holdTime = sharedPref.getString("rate_limit_window", "1");
                         mHoldTime = (long) (Float.parseFloat(holdTime) * TimeUtils.MILLIS_PER_MINUTE);
                         Log.d(TAG, "The holding time changes to " + mHoldTime / 1000 + " seconds");
+                        cancelLongHold();
+                        scheduleLongHold(true);
                         break;
                     case WakelockFragment.WAIT_TIME_CHANGE:
                         String waitTime = sharedPref.getString("wait_window", "1");
                         mWaitTime = (long) (Float.parseFloat(waitTime) * TimeUtils.MILLIS_PER_MINUTE);
                         Log.d(TAG, "The wait time changes to " + mWaitTime / 1000 + " seconds");
+                        cancelLongHold();
+                        scheduleLongHold(true);
                         break;
                     default:
                         Log.d(TAG, "Nothing changed");
@@ -159,4 +155,18 @@ public class LongHoldingService extends Service {
         }
     };
 
+    private final Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MSG_HOLDING_STATS:
+                    scheduleLongHold(true);
+                    break;
+                default:
+                    Log.d(TAG, "Unknown message");
+            }
+        }
+    };
+
 }
+

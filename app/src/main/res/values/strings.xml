@@ -7,7 +7,9 @@
     <string name="button_send">send</string>
     <string name="wakelock">Wakelock dirsuptive behavior</string>
     <string name="test_pref_title_test_mode">Enable Disruptive Behavior</string>
-    <string name="test_pref_description_test_mode">Start performing one type of disruptive behavior</string>
+    <string name="test_perf_title_mix_behavior">Enable Mix Behavior</string>
+    <string name="test_pref_description_test_mode">If enable this option, all disruptive behavior will run separately</string>
+    <string name="test_pref_description_mix_behavior">If enable this option, all disruptive behavior will run together</string>
     <string name="test_pref_description_behavior_type">"Choose the type of disruptive behavior to act"</string>
     <string name="test_pref_description_hold_time">"Choose the time that the app holds for each wakelock"</string>
     <string name="test_pref_description_wait_time">"Choose the time that the app waits for holding the next wakelock"</string>
@@ -28,8 +30,8 @@
         <item>Normal</item>
     </string-array>
 
-    <!-- Long Holding settings -->
-    <string name="test_pref_longholding_para">Long Holding parameters</string>
+    <!-- General settings -->
+    <string name="test_pref_general_parameter">General parameters</string>
     <string name="test_pref_holding_time">Wakelock holding time</string>
     <string-array name="test_pref_holding_window_titles">
         <item>10 seconds</item>
@@ -67,8 +69,83 @@
     </string-array>
     <string name="start_button">Start Behavior</string>
 
+    <!-- Mixed settings -->
+    <string name="test_pref_title_mix_behavior">Mix Behavior Setting</string>
+    <string name="test_pref_normal_number">Number of normal behavior</string>
+    <string-array name="test_pref_normal_number_title">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="test_pref_normal_number_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>0</item>
+    </string-array>
+
+    <string name="test_pref_long_hold_number">Number of long holding behavior</string>
+    <string-array name="test_pref_long_hold_number_title">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="test_pref_long_hold_number_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>0</item>
+    </string-array>
+
+    <string name="test_pref_low_utility_number">Number of low utility behavior</string>
+    <string-array name="test_pref_low_utility_number_title">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="test_pref_low_utility_number_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>0</item>
+    </string-array>
+    <string name="test_pref_high_damage_number">Number of high damage behavior</string>
+    <string-array name="test_pref_high_damage_number_title">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="test_pref_high_damage_number_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>0</item>
+    </string-array>
+
+
     <!-- Start settings -->
-    <string name="lease_pref_header_checker">Disruptive Behavior</string>
+    <string name="lease_pref_header_checker">Start Behavior</string>
+    <string name="lease_pref_title_enable_normal">Start Normal behavior </string>
     <string name="lease_pref_title_enable_long_hold">Start Long Holding behavior </string>
     <string name="lease_pref_title_enable_low_utility">Start Low Utility behavior</string>
     <string name="lease_pref_title_enable_high_damage">Start High Damaged behavior</string>

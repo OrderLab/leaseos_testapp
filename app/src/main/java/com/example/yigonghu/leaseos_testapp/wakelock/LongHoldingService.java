@@ -19,13 +19,10 @@
  *  limitations under the License.
  */
 
-package com.example.yigonghu.leaseos_testapp;
+package com.example.yigonghu.leaseos_testapp.wakelock;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -33,24 +30,25 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
-import android.os.Looper;
 import android.os.Message;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.example.yigonghu.leaseos_testapp.TimeUtils;
+
 public class LongHoldingService extends Service {
     private final static String TAG = "LongHoldingService";
-    public final static String ACTION_PREFIX = "edu.jhu.order.leaseos_testapp.action";
+    public final static String ACTION_PREFIX = "leaseos_testapp.wakelock.longholding.action";
     public final static String WAKELOCK_HOLDING_STATS = ACTION_PREFIX + ".HOLDING_STATS";
     public final static String PARAMETER_CHANGE = ACTION_PREFIX + ".PARAMETER_CHANGE";
     public final static String EXTRA_MESSAGE = ACTION_PREFIX + ".EXTRA_MESSAGE";
-    private final static int MSG_HOLDING_STATS = 1;
+    public final static String NOTE_LONGHOLD = ACTION_PREFIX + ".NOTE_LONGHOLD";
+    private final static int MSG_BEHIN_LONGHOLD = 1;
     private long mHoldTime = 0;
     private long mWaitTime = 0;
     private PowerManager.WakeLock mWakelock;
     private HandlerThread mHandlerThread;
-    ;
 
     private Runnable mHoldingWakelock = new Runnable() {
         @Override
@@ -67,13 +65,15 @@ public class LongHoldingService extends Service {
 
     @Override
     public void onCreate() {
-        Log.d(TAG, "Starting service...");
+        Log.d(TAG, "Starting long holding service...");
 
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        mWakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "LeaseOS_testapp");
+        mWakelock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "LeaseOS_testapp_wakelock_longhold");
+        mWakelock.setReferenceCounted(false);
 
         IntentFilter ifilter = new IntentFilter();
         ifilter.addAction(PARAMETER_CHANGE);
+        ifilter.addAction(NOTE_LONGHOLD);
         registerReceiver(mActionReceiver, ifilter);
 
         mHandlerThread = new HandlerThread(TAG);
@@ -91,7 +91,7 @@ public class LongHoldingService extends Service {
             mHoldTime = (long) (Float.parseFloat(holdTime) * TimeUtils.MILLIS_PER_MINUTE);
             String waitTime = sharedPref.getString("wait_window", "1");
             mWaitTime = (long) (Float.parseFloat(waitTime) * TimeUtils.MILLIS_PER_MINUTE);
-            mHandler.sendEmptyMessage(MSG_HOLDING_STATS);
+            mHandler.sendEmptyMessage(MSG_BEHIN_LONGHOLD);
         }
         return START_STICKY;
     }
@@ -159,7 +159,7 @@ public class LongHoldingService extends Service {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case MSG_HOLDING_STATS:
+                case MSG_BEHIN_LONGHOLD:
                     scheduleLongHold(true);
                     break;
                 default:

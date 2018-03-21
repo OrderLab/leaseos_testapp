@@ -9,17 +9,31 @@
             android:title="@string/test_pref_title_test_mode"
             android:summary="@string/test_pref_description_test_mode"
             android:defaultValue="false"/>
-        <ListPreference
-            android:key="behavior_type_window"
-            android:entries="@array/test_pref_behavior_type_titles"
-            android:entryValues="@array/test_pref_behavior_type_values"
-            android:summary="@string/test_pref_description_behavior_type"
-            android:defaultValue="0"
-            android:negativeButtonText="@null"
-            android:positiveButtonText="@null"
-            android:title="@string/test_pref_behavior_type" />
+        <CheckBoxPreference
+            android:key="mix_behavior"
+            android:title="@string/test_perf_title_mix_behavior"
+            android:summary="@string/test_pref_description_mix_behavior"
+            android:defaultValue="false"/>
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/test_pref_longholding_para">
+    <PreferenceCategory android:title="@string/lease_pref_header_checker">
+        <CheckBoxPreference
+            android:key="start_long_hold"
+            android:title="@string/lease_pref_title_enable_long_hold"
+            android:defaultValue="false"/>
+        <CheckBoxPreference
+            android:key="start_low_utility"
+            android:title="@string/lease_pref_title_enable_low_utility"
+            android:defaultValue="false"/>
+        <CheckBoxPreference
+            android:key="start_high_damage"
+            android:title="@string/lease_pref_title_enable_high_damage"
+            android:defaultValue="false"/>
+        <CheckBoxPreference
+            android:key="start_normal"
+            android:title="@string/lease_pref_title_enable_normal"
+            android:defaultValue="false"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/test_pref_general_parameter">
         <ListPreference
             android:key="rate_limit_window"
             android:title="@string/test_pref_holding_time"
@@ -39,18 +53,38 @@
             android:negativeButtonText="@null"
             android:positiveButtonText="@null" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/lease_pref_header_checker">
-    <CheckBoxPreference
-        android:key="start_long_hold"
-        android:title="@string/lease_pref_title_enable_long_hold"
-        android:defaultValue="false"/>
-    <CheckBoxPreference
-        android:key="start_low_utility"
-        android:title="@string/lease_pref_title_enable_low_utility"
-        android:defaultValue="false"/>
-    <CheckBoxPreference
-        android:key="start_high_damage"
-        android:title="@string/lease_pref_title_enable_high_damage"
-        android:defaultValue="false"/>
+    <PreferenceCategory android:title="@string/test_pref_title_mix_behavior">
+        <ListPreference
+            android:key="long_hold_number"
+            android:title="@string/test_pref_long_hold_number"
+            android:entries="@array/test_pref_long_hold_number_title"
+            android:entryValues="@array/test_pref_long_hold_number_values"
+            android:defaultValue="0"
+            android:negativeButtonText="@null"
+            android:positiveButtonText="@null"/>
+        <ListPreference
+            android:key="low_utility_number"
+            android:title="@string/test_pref_low_utility_number"
+            android:entries="@array/test_pref_low_utility_number_title"
+            android:entryValues="@array/test_pref_low_utility_number_values"
+            android:defaultValue="0"
+            android:negativeButtonText="@null"
+            android:positiveButtonText="@null"/>
+        <ListPreference
+            android:key="high_damage_number"
+            android:title="@string/test_pref_high_damage_number"
+            android:entries="@array/test_pref_high_damage_number_title"
+            android:entryValues="@array/test_pref_high_damage_number_values"
+            android:defaultValue="0"
+            android:negativeButtonText="@null"
+            android:positiveButtonText="@null"/>
+        <ListPreference
+            android:key="normal_number"
+            android:title="@string/test_pref_normal_number"
+            android:entries="@array/test_pref_normal_number_title"
+            android:entryValues="@array/test_pref_normal_number_values"
+            android:defaultValue="0"
+            android:negativeButtonText="@null"
+            android:positiveButtonText="@null"/>
     </PreferenceCategory>
 </PreferenceScreen>

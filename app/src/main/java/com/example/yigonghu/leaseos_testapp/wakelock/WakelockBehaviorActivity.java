@@ -19,14 +19,10 @@
  *  limitations under the License.
  */
 
-package com.example.yigonghu.leaseos_testapp;
+package com.example.yigonghu.leaseos_testapp.wakelock;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.widget.Toolbar;
-import android.widget.TextView;
 
 /**
  * Created by yigonghu on 3/13/18.

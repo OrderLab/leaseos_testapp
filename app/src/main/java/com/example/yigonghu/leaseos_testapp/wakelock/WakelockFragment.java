@@ -159,11 +159,9 @@ public class WakelockFragment extends PreferenceFragment implements SharedPrefer
 
     private void noteMixBehaviorEnable() {
         if (mixbehaviorEnabled) {
-            Log.d(TAG, "START the mix");
             Intent intent = new Intent(getActivity(), MixBehaviorService.class);
             getActivity().startService(intent);
         } else {
-            Log.d(TAG, "Stop the mix");
             Intent intent = new Intent(getActivity(), LongHoldingService.class);
             getActivity().stopService(intent);
         }

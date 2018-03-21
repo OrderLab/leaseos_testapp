@@ -49,6 +49,8 @@ public class MixBehaviorService extends Service {
     public final static String PARAMETER_CHANGE = ACTION_PREFIX + ".PARAMETER_CHANGE";
     public final static String BEHAVIOR_CHANGE = ACTION_PREFIX + ".BEHAVIOR_CHANGE";
     public final static String EXTRA_MESSAGE = ACTION_PREFIX + ".EXTRA_MESSAGE";
+    public final static int LONG_HOLD = 1;
+    public final static int NORMAL = 4;
 
     private PowerManager.WakeLock mWakelock;
     private HandlerThread mHandlerThread;
@@ -77,11 +79,24 @@ public class MixBehaviorService extends Service {
                 mWakelock.acquire(mHoldTime);
             }
 
-            if (count >= mLongHoldNumber) {
+            if (count < mNormalNumber) {
                 scheduleNormal(false, true);
             } else {
                 count = 0;
-                scheduleMixBehavior(false);
+                scheduleNextTurn(NORMAL);
+            }
+
+            long base = System.currentTimeMillis();
+            long now = base;
+            while (now - base <= mHoldTime/2) {
+                int x1 = 1;
+                int x2 = 1;
+                int x3 = x1 + x2;
+                for (int i = 0; i < 1000; i++) {
+                    x1 = x2;
+                    x2 = x3;
+                    x3 = x1+x2;
+                }
             }
         }
     };
@@ -97,10 +112,12 @@ public class MixBehaviorService extends Service {
                 mWakelock.acquire(mHoldTime);
             }
 
-            if (count >= mNormalNumber) {
+            if (count < mLongHoldNumber) {
+                //  Log.d(TAG,"1");
                 scheduleLongHold(false);
             } else {
                 count = 0;
+                scheduleNextTurn(LONG_HOLD);
             }
         }
     };
@@ -162,43 +179,74 @@ public class MixBehaviorService extends Service {
     }
 
     public void scheduleMixBehavior(boolean immediate) {
+        Log.d(TAG, "The Long Hold is " + mStartLongHold + ", and the Normal is " + mStartNormal);
         if (mStartLongHold) {
             scheduleLongHold(immediate);
         }
-        if (mStartLongHold || mStartNormal) {
+        if (mStartLongHold && mStartNormal) {
             scheduleNormal(immediate, false);
-        } else if (!mStartLongHold || mStartNormal) {
+        } else if (!mStartLongHold && mStartNormal) {
             scheduleNormal(immediate, true);
         }
+        count = 0;
     }
 
     public void scheduleLongHold(boolean immediate) {
         if (immediate) {
+            // Log.d(TAG, "Immediate delay for long hold");
             mHandler.postDelayed(mLongHoldBehavior, 0);
         } else {
+            //  Log.d(TAG, "Short delay for long hold, Delay for " + (mHoldTime + mWaitTime)/1000 + " seconds");
             mHandler.postDelayed(mLongHoldBehavior, mHoldTime + mWaitTime);
         }
     }
 
     public void scheduleNormal(boolean immediate, boolean noDelay) {
-        if (immediate) {
+        if (!noDelay && immediate) {
+            // Log.d(TAG, "Long delay for normal. Delay for " + (mHoldTime + mWaitTime)*mLongHoldNumber/1000 + " seconds");
+            mHandler.postDelayed(mNormalBehavior, (mHoldTime + mWaitTime) * mLongHoldNumber);
+            return;
+        }
+
+        if (!noDelay && !immediate) {
+            // Log.d(TAG, "Long delay for normal not immediate. Delay for " + (mHoldTime + mWaitTime)*(mLongHoldNumber+1)/1000 + " seconds");
+            mHandler.postDelayed(mNormalBehavior, (mHoldTime + mWaitTime) * (mLongHoldNumber + 1));
+            return;
+        }
+
+        if (noDelay && immediate) {
+            //  Log.d(TAG, "Immediate delay for normal");
             mHandler.postDelayed(mNormalBehavior, 0);
-        } else if (noDelay) {
+            return;
+        }
+
+        if (noDelay && !immediate) {
+            // Log.d(TAG, "Short delay for normal, Delay for " + (mHoldTime + mWaitTime)/1000 + " seconds");
             mHandler.postDelayed(mNormalBehavior, mHoldTime + mWaitTime);
-        } else {
-            mHandler.postDelayed(mNormalBehavior, (mHoldTime + mWaitTime)*mLongHoldNumber);
+            return;
+        }
+    }
+
+    public void scheduleNextTurn(int type) {
+        switch (type) {
+            case LONG_HOLD:
+                if (mStartLongHold && !mStartNormal) {
+                    scheduleMixBehavior(false);
+                }
+                break;
+            case NORMAL:
+                if (mStartNormal) {
+                    scheduleMixBehavior(false);
+                }
+                break;
         }
     }
 
     public void cancelMixBehavior() {
         if (mHandler != null) {
             Log.d(TAG, "Cancelling mix behavior");
-            if (mStartLongHold) {
-                mHandler.removeCallbacks(mLongHoldBehavior);
-            } else if (mStartNormal) {
-                mHandler.removeCallbacks(mNormalBehavior);
-            }
-
+            mHandler.removeCallbacks(mLongHoldBehavior);
+            mHandler.removeCallbacks(mNormalBehavior);
         }
     }
 
@@ -224,12 +272,20 @@ public class MixBehaviorService extends Service {
                         cancelMixBehavior();
                         scheduleMixBehavior(true);
                         break;
+                    case WakelockFragment.LONGHOLD_NUMBER_CHANGE:
+                        String longHoldNumber = sharedPref.getString("long_hold_number", "0");
+                        mLongHoldNumber = Integer.parseInt(longHoldNumber);
+                        Log.d(TAG, "The long hold number changes to " + mLongHoldNumber);
+                        cancelMixBehavior();
+                        scheduleMixBehavior(true);
+                        break;
                     case WakelockFragment.NORMAL_NUMBER_CHANGE:
                         String normalNumber = sharedPref.getString("normal_number", "0");
                         mNormalNumber = Integer.parseInt(normalNumber);
+                        Log.d(TAG, "The normal number changes to " + mNormalNumber);
                         cancelMixBehavior();
                         scheduleMixBehavior(true);
-
+                        break;
                     default:
                         Log.d(TAG, "Nothing changed");
                 }
@@ -241,10 +297,12 @@ public class MixBehaviorService extends Service {
                         mStartLongHold = sharedPref.getBoolean("start_long_hold", false);
                         cancelMixBehavior();
                         scheduleMixBehavior(true);
+                        break;
                     case WakelockFragment.NORMAL_CHANGE:
                         mStartNormal = sharedPref.getBoolean("start_normal", false);
                         cancelMixBehavior();
                         scheduleMixBehavior(true);
+                        break;
                 }
             }
         }

@@ -21,11 +21,15 @@
 
 package com.example.yigonghu.leaseos_testapp.wakelock;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.example.yigonghu.leaseos_testapp.BehaviorType;
@@ -56,7 +60,6 @@ public class WakelockFragment extends PreferenceFragment implements SharedPrefer
     public static final int NORMAL_CHANGE = 4;
 
     @Override
-
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Load the preferences from an XML resource

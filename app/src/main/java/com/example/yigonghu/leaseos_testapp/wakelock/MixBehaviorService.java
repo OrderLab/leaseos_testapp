@@ -21,12 +21,18 @@
 
 package com.example.yigonghu.leaseos_testapp.wakelock;
 
+import android.Manifest;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -34,9 +40,12 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import com.example.yigonghu.leaseos_testapp.TimeUtils;
+
+import static android.support.v4.app.ActivityCompat.requestPermissions;
 
 /**
  * Created by yigonghu on 3/20/18.
@@ -51,6 +60,7 @@ public class MixBehaviorService extends Service {
     public final static String EXTRA_MESSAGE = ACTION_PREFIX + ".EXTRA_MESSAGE";
     public final static int LONG_HOLD = 1;
     public final static int NORMAL = 4;
+    private final static int MSG_MIX_BEHAVIOR = 1;
 
     private PowerManager.WakeLock mWakelock;
     private HandlerThread mHandlerThread;
@@ -88,18 +98,18 @@ public class MixBehaviorService extends Service {
 
             long base = System.currentTimeMillis();
             long now = base;
-            while (now - base <= mHoldTime/2) {
-                int x1 = 1;
-                int x2 = 1;
-                int x3 = x1 + x2;
-                for (int i = 0; i < 1000; i++) {
-                    x1 = x2;
-                    x2 = x3;
-                    x3 = x1+x2;
+
+            while (now - base <= mHoldTime) {
+                try {
+                    Thread.sleep(4000);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+                now = System.currentTimeMillis();
             }
         }
     };
+
 
     private Runnable mLongHoldBehavior = new Runnable() {
         @Override
@@ -122,6 +132,15 @@ public class MixBehaviorService extends Service {
         }
     };
 
+    private Runnable mCollectStats = new Runnable() {
+        @Override
+        public void run() {
+            Log.d(TAG, "A new thread");
+            cancelMixBehavior();
+            scheduleMixBehavior(true);
+        }
+    };
+
     @Override
     public void onCreate() {
         Log.d(TAG, "Starting mixed behavior service...");
@@ -136,6 +155,7 @@ public class MixBehaviorService extends Service {
 
         mHandlerThread = new HandlerThread(TAG);
         mHandlerThread.start();
+
 
         super.onCreate();
     }
@@ -247,6 +267,7 @@ public class MixBehaviorService extends Service {
             Log.d(TAG, "Cancelling mix behavior");
             mHandler.removeCallbacks(mLongHoldBehavior);
             mHandler.removeCallbacks(mNormalBehavior);
+            mWakelock.release();
         }
     }
 
@@ -262,29 +283,25 @@ public class MixBehaviorService extends Service {
                         String holdTime = sharedPref.getString("rate_limit_window", "1");
                         mHoldTime = (long) (Float.parseFloat(holdTime) * TimeUtils.MILLIS_PER_MINUTE);
                         Log.d(TAG, "The holding time changes to " + mHoldTime / 1000 + " seconds");
-                        cancelMixBehavior();
-                        scheduleMixBehavior(true);
+                        mHandler.sendEmptyMessage(MSG_MIX_BEHAVIOR);
                         break;
                     case WakelockFragment.WAIT_TIME_CHANGE:
                         String waitTime = sharedPref.getString("wait_window", "1");
                         mWaitTime = (long) (Float.parseFloat(waitTime) * TimeUtils.MILLIS_PER_MINUTE);
                         Log.d(TAG, "The wait time changes to " + mWaitTime / 1000 + " seconds");
-                        cancelMixBehavior();
-                        scheduleMixBehavior(true);
+                        mHandler.sendEmptyMessage(MSG_MIX_BEHAVIOR);
                         break;
                     case WakelockFragment.LONGHOLD_NUMBER_CHANGE:
                         String longHoldNumber = sharedPref.getString("long_hold_number", "0");
                         mLongHoldNumber = Integer.parseInt(longHoldNumber);
                         Log.d(TAG, "The long hold number changes to " + mLongHoldNumber);
-                        cancelMixBehavior();
-                        scheduleMixBehavior(true);
+                        mHandler.sendEmptyMessage(MSG_MIX_BEHAVIOR);
                         break;
                     case WakelockFragment.NORMAL_NUMBER_CHANGE:
                         String normalNumber = sharedPref.getString("normal_number", "0");
                         mNormalNumber = Integer.parseInt(normalNumber);
                         Log.d(TAG, "The normal number changes to " + mNormalNumber);
-                        cancelMixBehavior();
-                        scheduleMixBehavior(true);
+                        mHandler.sendEmptyMessage(MSG_MIX_BEHAVIOR);
                         break;
                     default:
                         Log.d(TAG, "Nothing changed");
@@ -295,13 +312,11 @@ public class MixBehaviorService extends Service {
                 switch (actionType) {
                     case WakelockFragment.LONGHOLD_CHANGE:
                         mStartLongHold = sharedPref.getBoolean("start_long_hold", false);
-                        cancelMixBehavior();
-                        scheduleMixBehavior(true);
+                        mHandler.sendEmptyMessage(MSG_MIX_BEHAVIOR);
                         break;
                     case WakelockFragment.NORMAL_CHANGE:
                         mStartNormal = sharedPref.getBoolean("start_normal", false);
-                        cancelMixBehavior();
-                        scheduleMixBehavior(true);
+                        mHandler.sendEmptyMessage(MSG_MIX_BEHAVIOR);
                         break;
                 }
             }
@@ -312,6 +327,10 @@ public class MixBehaviorService extends Service {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
+                case MSG_MIX_BEHAVIOR:
+                    Thread t = new Thread(mCollectStats);
+                    t.start();
+                    break;
                 default:
                     Log.d(TAG, "Unknown message");
             }

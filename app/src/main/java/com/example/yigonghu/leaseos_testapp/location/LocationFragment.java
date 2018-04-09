@@ -73,7 +73,7 @@ public class LocationFragment extends PreferenceFragment implements SharedPrefer
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-
+        //TODO: implement this later
     }
 
 }

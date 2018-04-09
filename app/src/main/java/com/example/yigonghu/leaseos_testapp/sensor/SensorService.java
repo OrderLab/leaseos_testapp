@@ -52,7 +52,6 @@ public class SensorService extends Service implements SensorEventListener {
 		Log.d(TAG, "onCreate");
 		System.out.println("Sensor: On Create called!");
 
-
         sm = (SensorManager)this.getSystemService(Context.SENSOR_SERVICE);
 
         assert sm != null;

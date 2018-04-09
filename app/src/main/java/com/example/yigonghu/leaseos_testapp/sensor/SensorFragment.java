@@ -73,7 +73,7 @@ public class SensorFragment extends PreferenceFragment implements SharedPreferen
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-
+        //TODO: implement this later
     }
 
 }

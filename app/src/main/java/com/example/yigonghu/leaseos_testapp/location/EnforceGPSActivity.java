@@ -43,8 +43,6 @@ public class EnforceGPSActivity extends Activity {
 		}
 	}
 
-
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

@@ -54,9 +54,8 @@ public class LocationPollerService extends Service implements LocationListener {
 	@Override
 	public void onDestroy() {
 		Log.e(TAG, "onDestroy - why are we being destroyed???");
-		mLocationManager.removeUpdates(this);
+		//mLocationManager.removeUpdates(this);
 		System.out.println("location updates removed");
-		//locationTable.close();
 	}
 
 	@Override

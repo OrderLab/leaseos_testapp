@@ -19,7 +19,7 @@
  *  limitations under the License.
  */
 
-package com.example.yigonghu.leaseos_testapp.location;
+package com.example.yigonghu.leaseos_testapp.sensor;
 
 import android.Manifest;
 import android.content.Intent;
@@ -42,15 +42,15 @@ import com.example.yigonghu.leaseos_testapp.wakelock.LongHoldingService;
  * Created by suyiliu on 4/9/18.
  */
 
-public class LocationFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class SensorFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String EXTRA_MESSAGE = "com.example.yigonghu.leaseos_testapp.RECEIVER";
-    private static final String TAG = "LocationFragment";
+    private static final String TAG = "SensorFragment";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        System.out.println("here2");
+        System.out.println("here Sensor frag");
         super.onCreate(savedInstanceState);
-        Intent intent = new Intent(getActivity(), LocationPollerService.class);
+        Intent intent = new Intent(getActivity(), SensorService.class);
         getActivity().startService(intent);
     }
 
@@ -63,9 +63,9 @@ public class LocationFragment extends PreferenceFragment implements SharedPrefer
 
     @Override
     public void onPause() {
-        System.out.println("hereeee stopping location service.");
+        System.out.println("hereeee stopping sensor service.");
         super.onPause();
-        Intent intent = new Intent(getActivity(), LocationPollerService.class);
+        Intent intent = new Intent(getActivity(), SensorService.class);
         getActivity().stopService(intent);
         //getPreferenceScreen().getSharedPreferences()
         //        .unregisterOnSharedPreferenceChangeListener(this);

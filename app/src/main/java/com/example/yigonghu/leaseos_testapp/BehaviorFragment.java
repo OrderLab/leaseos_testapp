@@ -33,6 +33,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.example.yigonghu.leaseos_testapp.location.LocationBehaviorActivity;
+import com.example.yigonghu.leaseos_testapp.sensor.SensorBehaviorActivity;
 import com.example.yigonghu.leaseos_testapp.wakelock.WakelockBehaviorActivity;
 
 import java.util.ArrayList;
@@ -79,6 +80,9 @@ public class BehaviorFragment extends Fragment {
                         Intent intentLocation = new Intent(getActivity(), LocationBehaviorActivity.class);
                         startActivity(intentLocation);
                     case 2:
+                        System.out.println("hereeee sensor");
+                        Intent intentSensor = new Intent(getActivity(), SensorBehaviorActivity.class);
+                        startActivity(intentSensor);
                 }
 
             }

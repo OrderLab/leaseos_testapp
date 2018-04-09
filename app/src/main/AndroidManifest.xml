@@ -28,9 +28,13 @@
         <activity
             android:name=".location.EnforceGPSActivity"
             android:label="@string/app_name" />
+        <activity
+            android:name=".sensor.SensorBehaviorActivity"
+            android:label="@string/app_name" />
         <service android:name=".wakelock.LongHoldingService" />
         <service android:name=".wakelock.MixBehaviorService" />
         <service android:name=".location.LocationPollerService" />
+        <service android:name=".sensor.SensorService" />
 
     </application>
 

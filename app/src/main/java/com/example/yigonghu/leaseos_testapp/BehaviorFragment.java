@@ -32,6 +32,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.example.yigonghu.leaseos_testapp.location.LocationBehaviorActivity;
 import com.example.yigonghu.leaseos_testapp.wakelock.WakelockBehaviorActivity;
 
 import java.util.ArrayList;
@@ -69,10 +70,14 @@ public class BehaviorFragment extends Fragment {
                                     long id) {
                 switch (position) {
                     case 0:
+                        System.out.println("hereeeeeeeeee00");
                         Intent intent = new Intent(getActivity(), WakelockBehaviorActivity.class);
                         startActivity(intent);
                         break;
                     case 1:
+                        System.out.println("hereeee0");
+                        Intent intentLocation = new Intent(getActivity(), LocationBehaviorActivity.class);
+                        startActivity(intentLocation);
                     case 2:
                 }
 
